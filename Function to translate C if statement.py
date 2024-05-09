@@ -50,8 +50,8 @@ def LineTypeFunc():
 
         #2 - variable define
         if(line[0:3] == "int" or line[0:5] == "float" or line[0:4] == "char"):
-             if( "(" not in line and ")" not in line):
-                 line_type[c]=2
+            if( "(" not in line and ")" not in line):
+                line_type[c]=2
 
 
         
@@ -84,40 +84,11 @@ def LineTypeFunc():
                 line_type[c]=6
             else:
                 line_type[c]=7
-
-
-
-
-
-        #8 - for
-        if(line[0:3]=="for"):
-            line_type[c]=8
-
-        
-
-
-
-        
         #9 - while
         if(line[0:5]=="while"):
             line_type[c]=9
-
-
-
         
         #10 - arithmetic statement
-
-
-        
-        #11 - do while
-        if(line[0:2]=="do"):
-            line_type[c]=11
-
-
-        #12 - switch case
-        if(line[0:6]=="switch"):
-            line_type[c]=12
-
         #13 - comment
         if(line[0:2]=="//"):
             line_type[c]=13
@@ -205,7 +176,7 @@ f=open("output.txt")
 ff=open('bubble.txt','w')
 p=0
 for line in f:
-  
+
 
     if line_type[p] !=1:
         #print('a')
@@ -372,36 +343,6 @@ for line in f:
                 blank=blank+i
         ff.write(blank)
         blank=''
-
-    #for
-    elif line_type[shub]==8:
-        flag = 0 
-        if "int" in line:
-            flag = 1
-        if "float" in line:
-            flag = 2
-        line= re.sub('int',"",line)
-        line= re.sub('float',"",line)
-
-            
-        for i in line:
-            if i!=" ":
-                blank=blank+i
-            #print(blank)
-        if flag==0:
-            ff.write(blank)
-            blank=''
-
-        if flag==1:
-            ff.write(f'int {blank.split("(")[1].split("=")[0]};\n')    
-            ff.write(blank)
-            blank=''
-
-        if flag==2:
-            ff.write(f'float {blank.split("(")[1].split("=")[0]};\n')
-            ff.write(blank)
-            blank=''
-
         
     else:
         ff.write(line)
@@ -576,20 +517,6 @@ for line in f:
 f.close()
 ff.close()
 #-------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def mulD(a,h,n,dt):
     print(a,h,n,dt)
     if h==n:
@@ -645,7 +572,6 @@ def Tx_Multi_Comment(startline):
     startline = re.sub('/\*', "'''", startline)
     for xd in range(0,tab_count):
         ff.write('    ')
-   
     ff.write(startline)
     
 def Tx_If(line):
@@ -666,54 +592,6 @@ def Tx_Else_If(line):
     for xd in range(0,tab_count):
         ff.write('    ')
     ff.write(line)
-
-def Tx_For(line):
-    #line="for(adepu=0;adepu>100;adepu=adepu+10)"
-    a=line[4:-1]
-    b=a.split(";")
-    c=b[0].split("=")
-    intialvalue=c[1]
-    finalvalue=-1
-    increment_value=1
-
-    if("++" in b[2]):
-        increment = "1"
-        increment_value = 1
-        
-    elif("--" in b[2]):
-        increment = "-1"
-        increment_value = 1
-
-    elif("++" not in b[2] and "+" in b[2]):
-        increment = "1"
-        increment_value = b[2].split("+")[1]
-
-    elif("--" not in b[2] and "-" in b[2]):
-        increment = "-1"
-        
-        increment_value = b[2].split("-")[1]
-        
-    if "<=" in b[1]  or ">=" in b[1]:
-        finalvalue=b[1].split("=")[1]+'+1'
-        
-
-    elif "<" in b[1]:
-        finalvalue=b[1].split("<")[1] 
-        
-
-    elif ">" in b[1]:
-        finalvalue=b[1].split(">")[1] 
-        
-
-    elif  "!=" in b[1] and increment=="1":
-        finalvalue=b[1].split("=")[1]
-        
-
-    elif  "!=" in b[1] and increment=="-1":
-        finalvalue=b[1].split("=")[1] 
-    for xd in range(0,tab_count):
-        ff.write('    ')
-    ff.write(f'for {b[0].split("=")[0]} in range({intialvalue},{finalvalue},{int(increment)*int(increment_value)}):')
 
 
 def Tx_While(line):
@@ -738,7 +616,6 @@ def Tx_Function(line):
         c=[]
         for i in a:
             e=i.split()[1]
-          
             c.append(e)
             c.append(",")
 
@@ -1125,20 +1002,6 @@ for line in f:
             line_type[c]=6
         else:
             line_type[c]=7
-
-
-
-
-
-    #8 - for
-    if(line[0:3]=="for"):
-        line_type[c]=8
-
-    
-
-
-
-    
     #9 - while
     if(line[0:5]=="while"):
         line_type[c]=9
@@ -1148,16 +1011,6 @@ for line in f:
     
     #10 - arithmetic statement
 
-
-    
-    #11 - do while
-    if(line[0:2]=="do"):
-        line_type[c]=11
-
-
-    #12 - switch case
-    if(line[0:6]=="switch"):
-        line_type[c]=12
 
     #13 - comment
     if(line[0:2]=="//"):
@@ -1251,4 +1104,3 @@ for line in f:
         ff.write(line)
 f.close()
 ff.close()
-
