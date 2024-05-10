@@ -1058,9 +1058,6 @@ for i in range(0,len(code_lines)):
     elif line_type[i] == 7:
         Tx_Else(code_lines[i])
         
-    elif line_type[i] == 8:
-        Tx_For(code_lines[i])
-        
     elif line_type[i] == 9:
         Tx_While(code_lines[i])
 
