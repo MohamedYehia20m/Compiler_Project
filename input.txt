@@ -1,7 +1,5 @@
-
 x=5;
 //char mohamed='m';
-
 /*
 hello world
 */
@@ -18,9 +16,30 @@ while(x==5){
 }
 
 while(1)
+{
     l=l;
+}
 
 
 int main(int args, int argv){
     hello();
+}
+
+
+
+
+void salma(int y){
+    //char mo[1] = 'm';
+    if(y==5){
+        z=y;
+        while(z--){
+            printf("hello %i, %s", z, mo);
+        }
+    }
+}
+
+int main(){
+    //int x = 5;
+    salma(x);
+    return (0);
 }
