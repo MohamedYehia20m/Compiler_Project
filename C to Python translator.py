@@ -147,7 +147,7 @@ for line in ff:
 
 f.close()
 ff.close()
-   
+
 f=open('bubble.txt')
 ff=open('output.txt','w')
         
@@ -349,9 +349,6 @@ for line in f:
         blank=''
 
     shub+=1
-
-        
-
 
 f.close()
 ff.close()
