@@ -1,4 +1,26 @@
+
 x=5;
+//char mohamed='m';
+
+/*
+hello world
+*/
+
 while(x==5){
-    y=x;
+    kholoud=7;
+    if(x==5)
+        y=5;
+    else if(yehia==9)
+        yehia = 8;
+    else
+        x=5;
+    printf("hello, Eng. habiba %i", x);
+}
+
+while(1)
+    l=l;
+
+
+int main(int args, int argv){
+    hello();
 }
