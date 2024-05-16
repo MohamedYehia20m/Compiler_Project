@@ -1,4 +1,65 @@
 import re
+import pycparser
+from graphviz import Digraph
+
+def draw_while_parse_tree(c_code):
+    # Parse the C code into an AST
+    parser = pycparser.CParser()
+    ast = parser.parse(c_code)
+
+    # Create a Graphviz Digraph
+    dot = Digraph()
+
+    # Function to find the first 'while' statement in the AST
+    def find_while(node):
+        if isinstance(node, pycparser.c_ast.While):
+            return node
+        for child_name, child in node.children():
+            result = find_while(child)
+            if result is not None:
+                return result
+        return None
+
+    # Function to add nodes and edges to the graph
+    def add_nodes_edges(node, parent_id=None):
+        node_id = str(id(node))
+        if isinstance(node, pycparser.c_ast.ID):
+            label = node.name
+        elif isinstance(node, pycparser.c_ast.BinaryOp):
+            label = node.op
+        else:
+            label = type(node).__name__
+        dot.node(node_id, label)
+
+        if parent_id is not None:
+            dot.edge(parent_id, node_id)
+
+        for child_name, child in node.children():
+            add_nodes_edges(child, node_id)
+
+
+    # Find the 'while' statement
+    while_node = find_while(ast)
+    if while_node is None:
+        raise ValueError("No 'while' statement found in the provided C code.")
+
+    # Start the recursion from the 'while' node
+    add_nodes_edges(while_node)
+
+    # Render the graph to a file and display it
+    dot.render('while_parse_tree', view=True, format='png')
+
+# Function to read C code from a file
+def read_c_code_from_file(filename):
+    with open(filename, 'r') as file:
+        c_code = file.read()
+    return c_code
+
+# Example usage
+filename = 'input.txt'
+c_code = read_c_code_from_file(filename)
+draw_while_parse_tree(c_code)
+
 #---------line type return funtion-------------------------
 def LineTypeFunc():
     code_lines=[]
