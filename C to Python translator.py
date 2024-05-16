@@ -1,10 +1,4 @@
 import re
-#--------is even function--------------------------
-def isEven(m):
-    if m % 2 == 0:
-        return True
-    else:
-        return False
 #---------line type return funtion-------------------------
 def LineTypeFunc():
     code_lines=[]
@@ -33,14 +27,6 @@ def LineTypeFunc():
             if 'sizeof' in line:
                 line = re.sub("sizeof","len",line)
         #print (line,c)
-        #1 - function
-        if(line[0:3] == "int" or line[0:5] == "float" or line[0:4] == "char" or line[0:4] == "void"):
-            if( "(" in line and ")" in line):
-                line_type[c]=1
-        #2 - variable define
-        if(line[0:3] == "int" or line[0:5] == "float" or line[0:4] == "char"):
-            if( "(" not in line and ")" not in line):
-                line_type[c]=2
         #4 - print
         if(line[0:5]=="print"):
             line_type[c]=4
@@ -57,7 +43,6 @@ def LineTypeFunc():
         #9 - while
         if(line[0:5]=="while"):
             line_type[c]=9
-        #10 - arithmetic statement
         #13 - comment
         if(line[0:2]=="//"):
             line_type[c]=13
@@ -113,73 +98,12 @@ for line in ff:
 f.close()
 ff.close()
 
-f=open('bubble.txt')
-ff=open('output.txt','w')
-        
-for line in f:          #########correct mistaakke(print case)
-    '''if '{' in line:
-        a=line
-        cn=''
-        x=a.split('{')
-        x[0]=x[0].strip()+'\n{\n'
-        x[1]=x[1].strip()
-        for i in x:
-            cn+=i
-        ff.write(cn)
-    else:'''
-    ff.write(line)
-
-ff.close()
-f.close()
-#--------3. Remove extra spaces in function declearation statement--------------------------
-
-f= open("output.txt")
-line_type=LineTypeFunc()
-f.close()
-
-f=open("output.txt")
-ff=open('bubble.txt','w')
-p=0
-for line in f:
-    if line_type[p] !=1:
-        #print('a')
-        ff.write(line)
-    else:
-        #print('b')
-        a=[]
-        w=1
-        z = line.split('(')[0].split()
-        x = line.split('(')[1].split(",")
-        for i in x:
-            i=i.lstrip()
-            a.append(i)
-        #print (z)
-        b=''
-        #print (a)
-        for j in a:
-            b=b+" "+j
-        c=b.split()
-        c[-1]=c[-1][:-1]
-        #print(c)
-        k=z[0]+' '+z[1]+'('
-        for e in c:
-            if isEven(w):
-                k=k+e+','
-            else:
-                k=k+e+' '
-            w+=1
-        line1=k[:-1]+')'
-        ff.write(line1+'\n')
-    p+=1
-
-ff.close()
-f.close()
 #--------4. Spaces in assignment operation--------------------------
 f=open("output.txt",'w')
 ff=open('bubble.txt')
 line1=''
 for line in ff:
-    if "print" in line or "while" in line or "if" in line or "int" in line or "float" in line:
+    if "print" in line or "while" in line or "if" in line:
         f.write(line)
     elif "=" in line:
         if "'" not in line or '"' not in line:
@@ -209,6 +133,7 @@ for line in ff:
         f.write(line)
 ff.close()
 f.close()
+
 #-------5. spaces in variable declearation---------------------------
 f= open("output.txt")
 line_type=LineTypeFunc()
@@ -292,31 +217,8 @@ for line in f:
 
 f.close()
 ff.close()
-#-------7. spaces in function datatype and function name---------------------------
 
-f= open("output.txt")
-line_type=LineTypeFunc()
-f.close()
-
-f=open('output.txt')
-ff=open('bubble.txt','w')
-shub=0
-
-
-for line in f:
-    if line_type[shub]==1:
-        line1 =''
-        a=line.split()
-        for i in range(0,len(a)):
-            line1=line1+a[i]+" "
-        ff.write(line1[:-1])
-    else:
-        ff.write(line)
-
-
-f.close()
-ff.close()
-#---------8. Extra spaces in print and scan statements.-------------------------
+#---------8. Extra spaces in print statement.-------------------------
 f= open("bubble.txt")
 line_type=LineTypeFunc()
 f.close()
@@ -411,7 +313,7 @@ shub=0
 fflag=0
 bflag=0
 for line in f:
-    if line_type[shub]==5 or line_type[shub]==6 or line_type[shub]==7 or line_type[shub]==8 or line_type[shub]==9:
+    if line_type[shub]==5 or line_type[shub]==6 or line_type[shub]==7 or line_type[shub]==9:
         #print('hi')
         if fflag==1:
             ff.write('{\n'+line)
@@ -512,239 +414,6 @@ def Tx_While(line):
         ff.write('    ')
     ff.write(line)
 
-def Tx_Function(line):
-    #line="int main()"
-    #print(line)
-    bi=line.split("(")[1][:-1]
-    #print(bi)
-    d=line.split("(")[0].split()[1]
-    if "," in line:
-        bi=line.split("(")[1][:-1]
-        d=line.split("(")[0].split()[1]
-        a=bi.split(",")
-        print(bi,d,a)
-        c=[]
-        for i in a:
-            e=i.split()[1]
-            c.append(e)
-            c.append(",")
-        c.pop()
-        ff.write("def "+d+"(")
-        for i in c:
-            ff.write(i)
-        ff.write("):")
-    elif bi=="":
-        bi=line.split("(")[1][:-1]
-        d=line.split("(")[0].split()[1]
-        ff.write("def "+d+"():")
-    else:
-        #print("hiii")
-        #print(bi.split())
-        ff.write("def "+d+"("+bi.split(" ")[1]+"):")
-
-def Tx_Variables(line):
-    #line = "char num1,num2,a[777],shubhamchutiy,shubhamyz"
-    line=line[:-1]
-    x = line.split(" ")
-    ln=""
-    if(x[0]=="signed" or x[0]=="unsigned"):
-        if(x[1] == "int" or x[1] == "float" or x[1] == "char" or x[1] == "double" or x[1] == "long"):
-            x.pop(0)
-            for i in x:
-                ln=x+" "
-            Tx_Variables(ln[:-1])
-        else:
-            b = line.split(" ",1)
-            c = b[1].split(",")
-            d=[]
-            j=""
-            dt='i'
-            for i in c:
-                a=[]
-                #print(i)
-                int_var.append(i)
-                if "[" in i and "]" in i:
-                    if "][" in i:
-                        l= i.split('[')
-                        temp=l[0]
-                        for bi in range(1,len(l)):
-                            a.append(int(l[bi][:-1]))
-                        n=len(a)-1
-                        for xd in range(0,tab_count):
-                            ff.write('    ')
-                        ff.write(f'{temp}=[')
-                        mulD(a,0,n,dt)
-                        ff.write(']\n')
-                    else:
-                        temp=i.split('[')
-                        num=int(temp[1].split(']')[0])
-                        #print(num)
-                        j=temp[0] + '=['
-                        for z in range(0,num):
-                            j= j+'0,'
-                        j=j[:-1]+']\n'
-                else :
-                    i = str(i)
-                    j = i + '=0'
-                d.append(j)    
-            for i in d:
-                for xd in range(0,tab_count):
-                    ff.write('    ')
-                ff.write(i+'\n')
-    if(x[0]=="bool"):
-        b = line.split(" ",1)
-        c = b[1].split(",")
-        d=[]
-        j=""
-        dt='bo'
-        for i in c:
-            a=[]
-            #print(i)
-            int_var.append(i)
-            if "[" in i and "]" in i:
-                if "][" in i:
-                    l= i.split('[')
-                    temp=l[0]
-                    for bi in range(1,len(l)):
-                        a.append(int(l[bi][:-1]))
-                    n=len(a)-1
-                    for xd in range(0,tab_count):
-                        ff.write('    ')
-                    ff.write(f'{temp}=[')
-                    mulD(a,0,n,dt)
-                    ff.write(']\n')
-                else:
-                    temp=i.split('[')
-                    num=int(temp[1].split(']')[0])
-                    #print(num)
-                    j=temp[0] + '=['
-                    for z in range(0,num):
-                        j= j+'False,'
-                    j=j[:-1]+']\n'
-            else :
-                i = str(i)
-                j = i + '=False'
-            d.append(j)
-        for i in d:
-            for xd in range(0,tab_count):
-                ff.write('    ')
-            ff.write(i+'\n')
-    if(x[0]=="int" or x[0]=="long"):
-        b = line.split(" ",1)
-        c = b[1].split(",")
-        d=[]
-        j=""
-        dt='i'
-        for i in c:
-            #print(i)
-            a=[]
-            int_var.append(i)
-            if "[" in i and "]" in i:
-                if "][" in i:
-                    l= i.split('[')
-                    temp=l[0]
-                    for bi in range(1,len(l)):
-                        a.append(int(l[bi][:-1]))
-                    print(a)
-                    n=len(a)-1
-                    for xd in range(0,tab_count):
-                        ff.write('    ')
-                    #ff.write(n)
-                    ff.write(f'{temp}=[')
-                    mulD(a,0,n,dt)
-                    ff.write(']\n')
-                else:
-                    temp=i.split('[')
-                    num=int(temp[1].split(']')[0])
-                    #print(num)
-                    j=temp[0] + '=['
-                    for z in range(0,num):
-                        j= j+'0,'
-                    j=j[:-1]+']\n'
-            else :
-                i = str(i)
-                j = i + '=0'
-            d.append(j)    
-        for i in d:
-            for xd in range(0,tab_count):
-                ff.write('    ')
-            ff.write(i+'\n')
-    if(x[0]=="float" or x[0]=="double"):
-        b = line.split(" ",1)
-        c = b[1].split(",")
-        d=[]
-        j=""
-        dt='f'
-        for i in c:
-            a=[]
-            float_var.append(i)
-            if "[" in i and "]" in i:
-                if "][" in i:
-                    l= i.split('[')
-                    temp=l[0]
-                    for bi in range(1,len(l)):
-                        a.append(int(l[bi][:-1]))
-                    n=len(a)-1
-                    for xd in range(0,tab_count):
-                        ff.write('    ')
-                    ff.write(f'{temp}=[')
-                    mulD(a,0,n,dt)
-                    ff.write(']\n')
-                else:
-                    temp=i.split('[')
-                    num=int(temp[1].split(']')[0])
-                    #print(num)
-                    j=temp[0] + '=['
-                    for z in range(0,num):
-                        j= j+'0.0,'
-                    j=j[:-1]+']\n'
-            else :
-                i = str(i)
-                j = i + '=0.0'
-            d.append(j)    
-        for i in d:
-            for xd in range(0,tab_count):
-                ff.write('    ')
-            ff.write(i+'\n')
-    if(x[0]=="char"):
-        b = line.split(" ",1)
-        c = b[1].split(",")
-        d=[]
-        j=""
-        dt='ch'
-        for i in c:
-            a=[]
-            char_var.append(i)
-            int_var.append(i)
-            if "[" in i and "]" in i:
-                if "][" in i:
-                    l= i.split('[')
-                    temp=l[0]
-                    for bi in range(1,len(l)):
-                        a.append(int(l[bi][:-1]))
-                    n=len(a)-1
-                    for xd in range(0,tab_count):
-                        ff.write('    ')
-                    ff.write(f'{temp}=[')
-                    mulD(a,0,n,dt)
-                    ff.write(']\n')
-                else:
-                    temp=i.split('[')
-                    num=int(temp[1].split(']')[0])
-                    #print(num)
-                    j=temp[0] + '=['
-                    for z in range(0,num):
-                        j= j+'""'
-                    j=j[:-1]+']\n'
-            else :
-                i = str(i)
-                j = i + '=" "'
-            d.append(j)    
-        for i in d:
-            for xd in range(0,tab_count):
-                ff.write('    ')
-            ff.write(i+'\n')
-
 def Tx_Printf(line):
     if '",' in line:
         #line='printf("test1=%d, test2=%c, testomegalol=%s, shubhamxx",a,b,c);'
@@ -810,14 +479,6 @@ for line in f:
         if 'sizeof' in line:
             line = re.sub("sizeof","len",line)
     #print (line,c)
-    #1 - function
-    if(line[0:3] == "int" or line[0:5] == "float" or line[0:4] == "char" or line[0:4] == "void"):
-        if( "(" in line and ")" in line):
-            line_type[c]=1
-    #2 - variable define
-    if(line[0:3] == "int" or line[0:5] == "float" or line[0:4] == "char" or line[0:4] == "bool" or line[0:6] == "double" or line[0:4] == "long" or line[0:6] == "signed" or line[0:8] == "unsigned" ):
-        if( "(" not in line and ")" not in line):
-            line_type[c]=2
     #4 - print
     if(line[0:5]=="print"):
         line_type[c]=4
@@ -834,7 +495,6 @@ for line in f:
     #9 - while
     if(line[0:5]=="while"):
         line_type[c]=9
-    #10 - arithmetic statement
     #13 - comment
     if(line[0:2]=="//"):
         line_type[c]=13
@@ -860,10 +520,6 @@ for i in range(0,len(code_lines)):
         for xd in range(0,tab_count):
             ff.write('    ')
         ff.write("#"+code_lines[i])
-    elif line_type[i] == 1:
-        Tx_Function(code_lines[i])
-    elif line_type[i] == 2:
-        Tx_Variables(code_lines[i])
     elif line_type[i] == 4:
         Tx_Printf(code_lines[i])
     elif line_type[i] == 5:
@@ -874,10 +530,6 @@ for i in range(0,len(code_lines)):
         Tx_Else(code_lines[i])
     elif line_type[i] == 9:
         Tx_While(code_lines[i])
-    elif line_type[i] == 11:
-        ff.write("#do"+code_lines[i])
-    elif line_type[i] == 12:
-        ff.write("#switch"+code_lines[i])
     elif line_type[i] == 13:
         Tx_Single_Comment(code_lines[i])
     elif line_type[i] == 14:
@@ -896,7 +548,6 @@ for i in range(0,len(code_lines)):
             ff.write(code_lines[k])
             line_type[k] = -2
 
-# ff.write('main()')
 
 f.close()
 ff.close()
