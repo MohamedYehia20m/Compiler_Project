@@ -1,45 +1,17 @@
-x=5;
-//char mohamed='m';
-/*
-hello world
-*/
-
-while(x==5){
-    kholoud=7;
-    if(x==5)
-        y=5;
-    else if(yehia==9)
-        yehia = 8;
-    else
-        x=5;
-    printf("hello, Eng. habiba %i", x);
-}
-
-while(1)
+int main(int args, int argv)
 {
-    l=l;
-}
-
-
-int main(int args, int argv){
-    hello();
-}
-
-
-
-
-void salma(int y){
-    //char mo[1] = 'm';
-    if(y==5){
-        z=y;
-        while(z--){
-            printf("hello %i, %s", z, mo);
+    while (x > y)
+    {
+        x = x + 1;
+        y = y - 1;
+        if (y == -1)
+            y = 0;
+        else if (x > 10){
+            x = 5;
+        }
+        else{
+            printf("hello world");
         }
     }
-}
-
-int main(){
-    //int x = 5;
-    salma(x);
-    return (0);
+    return 0;
 }
