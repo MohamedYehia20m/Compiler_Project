@@ -622,3 +622,20 @@ for line in f:
         ff.write(line)
 f.close()
 ff.close()
+
+
+def replace_first_line(file_path, new_line):
+    # Read the contents of the file
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+
+    # Replace the first line with the new string
+    lines[0] = new_line + '\n'
+
+    # Write the modified contents back to the file
+    with open(file_path, 'w') as file:
+        file.writelines(lines)
+
+file_path = 'pythonoutput.txt'
+new_first_line = 'if __name__ == "__main__":'
+replace_first_line(file_path, new_first_line)
