@@ -1,8 +1,8 @@
 import re
-import pycparser
 from graphviz import Digraph
 
 def draw_while_parse_tree(c_code):
+    import pycparser
     # Parse the C code into an AST
     parser = pycparser.CParser()
     ast = parser.parse(c_code)
@@ -65,10 +65,6 @@ def LineTypeFunc():
     code_lines=[]
     line_type=[]
     c=-1
-    int_var=[]
-    float_var=[]
-    char_var=[]
-    tab_count=0
     for line in f:
         c=c+1
         code_lines.append(line[:-1])
@@ -82,123 +78,101 @@ def LineTypeFunc():
                 line=re.sub('};',']',line)
                 a=line
                 a=a.split('=')
-                #print(a)
                 b=a[0].split('[')[0]
                 line=b+'='+a[1]
             if 'sizeof' in line:
                 line = re.sub("sizeof","len",line)
-        #print (line,c)
-        #4 - print
         if(line[0:5]=="print"):
             line_type[c]=4
-        #5 - if
         if(line[0:2]=="if"):
             line_type[c]=5
-        #6 - else if
-        #7 - else
         if(line[0:4]=="else"):
             if(line[0:7]=="else if"):
                 line_type[c]=6
             else:
                 line_type[c]=7
-        #9 - while
         if(line[0:5]=="while"):
             line_type[c]=9
-        #13 - comment
-        if(line[0:2]=="//"):
-            line_type[c]=13
-        #14 - multi comment
-        if(line[0:2]=="/*"):
-            line_type[c]=14
     return line_type
 
-
-f= open ('input.txt')
-ff= open ('output.txt','w')
-for line in f:
-    ff.write(line)
-f.close()
-ff.close()
+# Reading from 'input.txt' and writing to 'output.txt'
+with open('input.txt', 'r') as input_file:
+    with open('output.txt', 'w') as output_file:
+        for line in input_file:
+            output_file.write(line)
 
 #----------move { to sperate lines------------------------
-f=open ("output.txt")
-ff=open ('bubble.txt','w')
+def process_output_file():
+    with open("output.txt", 'r') as input_file, open('bubble.txt', 'w') as output_file:
+        for line in input_file:
+            if 'printf' not in line:
+                line = re.sub(r'{', r'\n{\n', line)
+                line = re.sub(r'}', r'\n}\n', line)
+            output_file.write(line)
 
-for line in f:
-    if 'printf' not in line:
-        line=re.sub('{','\n{\n',line)
-        line=re.sub('}','\n}\n',line)
-    ff.write(line)
-f.close()
-ff.close()
+process_output_file()
+
 #--------1. Remove white lines--------------------------
-f=open ("bubble.txt")
-ff=open ('output.txt','w')
+with open("bubble.txt", 'r') as f, open('output.txt', 'w') as ff:
+    for line in f:
+        if not line.isspace():
+            ff.write(line)
 
-for line in f:
-    if line.isspace()==False:
-        ff.write(line)
-f.close()
-ff.close()
 #---------2. Remove spaces before lines-------------------------
-f=open ("bubble.txt",'w')
-ff=open ('output.txt')
+with open("bubble.txt", 'w') as output_file:
+    with open('output.txt', 'r') as input_file:
+        for line in input_file:
+            if line.startswith(" "):
+                first_non_space_index = 0
+                for char in line:
+                    if char != " ":
+                        break
+                    first_non_space_index += 1
+                cleaned_line = line[first_non_space_index:]
+                output_file.write(cleaned_line)
+            else:
+                output_file.write(line)
 
-for line in ff:
-    j=0
-    if line[0] == " ":
-        for i in line:
-            j+=1
-            if i != " ":
-                break
-        line1=line[j-1:]
-        f.write(line1)
-    else:
-        f.write(line)
-
-f.close()
-ff.close()
 
 #--------4. Spaces in assignment operation--------------------------
-f=open("output.txt",'w')
-ff=open('bubble.txt')
-line1=''
-for line in ff:
-    if "print" in line or "while" in line or "if" in line:
-        f.write(line)
-    elif "=" in line:
-        if "'" not in line or '"' not in line:
-            boho = line.split()
-            for i in boho:
-                if i[0]!=" " and i[-1]!=" ":
-                    line1=line1+i
-            f.write(line1+'\n')
-            line1=''
-        elif "'" in line or '"' in line:
-            line = z
-            line1=''
-            i=0
-            while i!=len(z):
-                if z[i]!=" " and z[i]!=' ':
-                    line1=line1+z[i]
-                if z[i] == "'" or z[i] == '"':
-                    i=i+1
-                    break
-                i=i+1
-            while i!=len(z):
-                line1=line1+z[i]
-                i=i+1
-            f.write(line1+'\n')
-            line1=''
-    else:
-        f.write(line)
-ff.close()
-f.close()
+with open('bubble.txt', 'r') as input_file, open('output.txt', 'w') as output_file:
+    line_buffer = ''
+
+    for line in input_file:
+        if "print" in line or "while" in line or "if" in line:
+            output_file.write(line)
+        elif "=" in line:
+            if "'" not in line or '"' not in line:
+                split_line = line.split()
+                for word in split_line:
+                    if word[0] != " " and word[-1] != " ":
+                        line_buffer += word
+                output_file.write(line_buffer + '\n')
+                line_buffer = ''
+            elif "'" in line or '"' in line:
+                line_buffer = ''
+                i = 0
+                while i != len(line):
+                    if line[i] != " " and line[i] != ' ':
+                        line_buffer += line[i]
+                    if line[i] == "'" or line[i] == '"':
+                        i += 1
+                        break
+                    i += 1
+                while i != len(line):
+                    line_buffer += line[i]
+                    i += 1
+                output_file.write(line_buffer + '\n')
+                line_buffer = ''
+        else:
+            output_file.write(line)
+
 
 #-------5. spaces in variable declearation---------------------------
 f= open("output.txt")
 line_type=LineTypeFunc()
 f.close()
+
 f=open('output.txt')
 ff=open('bubble.txt','w')
 shub=0
@@ -227,7 +201,6 @@ for line in f:
                 l=l+ex.split('=')[0]+','
             else:
                 l=l+ex+','
-            #print (l)
         if '=' in line:
             ff.write(l[:-1]+';'+'\n')
         if '=' not in line:
@@ -245,6 +218,7 @@ for line in f:
     shub+=1
 ff.close()
 f.close()
+
 #--------6. Extra spaces in conditional statements--------------------------
 f= open("bubble.txt")
 line_type=LineTypeFunc()
@@ -256,15 +230,12 @@ shub=0
 blank=''
 
 for line in f:
-    #if
     if line_type[shub]==5:
-        
         for i in line:
             if i!=" ":
                 blank=blank+i
         ff.write(blank)
         blank=''
-    #while
     elif line_type[shub]==9:
         for i in line:
             if i!=" ":
@@ -287,18 +258,14 @@ f.close()
 f=open('bubble.txt')
 ff=open('output.txt','w')
 shub=0
-
 for line in f:
     if line_type[shub]==3 or line_type[shub]==4:
-        #print('A')
-        #if ',' in line:
         if len(line.split('"'))<=3:
             a=line.split('"')
             blank=''
             for i in a[0]:
                 if i!=' ':
                     blank+=i
-            #print(blank)
             blank=blank+'"'+a[1]+'"'
             for i in a[2]:
                 if i!=' ':
@@ -315,32 +282,25 @@ for line in f:
                 if flagg==0:
                     if(line[i]!=' '):
                         blank=blank+line[i]
-                #print(blank)
             while(line[new]!='"'):
                 new+=1
-            #print(new)
             start1=new
             for j in range(len(line),0,-1):
                 if line[j-1]=='"':
                     break
-            #print(j)
             end1=j
             while(new!=j):
                 blank=blank+line[new]
-                new+=1   
-            #print(blank)
-            #print(j)
+                new+=1
             while(j!=len(line)):
                 if(line[j]!=" "):
                     blank=blank+line[j]
                 j+=1
-            #print(blank)
             allx=0
             while(start1+2!=end1-2):
                 if(line[start1]=='"'):
                     allx=allx+1
                 start1=start1+1
-            #print(allx-1)
             task=0
             start=-1
             end=len(blank)
@@ -348,21 +308,18 @@ for line in f:
                 start+=1
                 if blank[start]=='"':
                     break
-            #print(start)
             while(end!=0):
                 end-=1
                 if blank[end]=='"':
                     break
-            #print(end)
-            blanknew=blank[start+1:end].replace('"','\\"')  
-            #print(blanknew)
+            blanknew=blank[start+1:end].replace('"','\\"')
             ff.write(blank[:start+1]+blanknew+blank[end:])
     else:
         ff.write(line)
     shub+=1
-
 f.close()
 ff.close()
+
 #---------9. adding brackets to loops which dont have-------------------------
 f= open("output.txt")
 line_type=LineTypeFunc()
@@ -375,7 +332,6 @@ fflag=0
 bflag=0
 for line in f:
     if line_type[shub]==5 or line_type[shub]==6 or line_type[shub]==7 or line_type[shub]==9:
-        #print('hi')
         if fflag==1:
             ff.write('{\n'+line)
             bflag+=1
@@ -399,56 +355,8 @@ for line in f:
 
 f.close()
 ff.close()
+
 #-------------------------------------------------
-def mulD(a,h,n,dt):
-    print(a,h,n,dt)
-    if h==n:
-        for t in range (0,int(a[h])):
-            if dt=='i':
-                if t==int(a[h])-1:
-                    print(0)
-                    ff.write('0')
-                else:
-                    print(0,)
-                    ff.write('0,')
-            elif dt=='f':
-                if t==int(a[h])-1:
-                    ff.write('0.0')
-                else:
-                    ff.write('0.0,')
-            elif dt=='ch':
-                if t==int(a[h])-1:
-                    ff.write('""')
-                else:
-                    ff.write('"",')
-            elif dt=='bo':
-                if t==int(a[h])-1:
-                    ff.write('False')
-                else:
-                    ff.write('False,')
-    else:    
-        for i in range(0,int(a[h])):
-            ff.write('[')
-            print('[')
-            mulD(a,h+1,n,dt)
-            if i==int(a[h])-1:
-                ff.write(']')
-                print(']')
-            else:
-                ff.write('],')
-                print('],')
-
-def Tx_Single_Comment(line):
-    line = re.sub('//', '#', line)
-    for xd in range(0,tab_count):
-        ff.write('    ')
-    ff.write(line)
-
-def Tx_Multi_Comment(startline):
-    startline = re.sub('/\*', "'''", startline)
-    for xd in range(0,tab_count):
-        ff.write('    ')
-    ff.write(startline)
 
 def Tx_If(line):
     line=(line+":")
@@ -477,17 +385,14 @@ def Tx_While(line):
 
 def Tx_Printf(line):
     if '",' in line:
-        #line='printf("test1=%d, test2=%c, testomegalol=%s, shubhamxx",a,b,c);'
         line=line
         a = line.split('"')
         variable = a[2][:-2].split(',')
-        #print(variable)
         newva= variable[1:]
         li= a[1].split("%")
         xxd=[li[0]]
         for i in range(1,len(li)):
             xxd.append(li[i][1:])
-        #print(li)
         c=0
         for xd in range(0,tab_count):
             ff.write('    ')
@@ -507,8 +412,6 @@ def Tx_Printf(line):
 f= open("bubble.txt")
 ff= open('output.txt','w')
 code_lines=[]
-'''for line in f:
-    code_lines.append(line)'''
 line_type=[]
 c=-1
 int_var=[]
@@ -534,35 +437,23 @@ for line in f:
             line=re.sub('};',']',line)
             a=line
             a=a.split('=')
-            #print(a)
             b=a[0].split('[')[0]
             line=b+'='+a[1]
         if 'sizeof' in line:
             line = re.sub("sizeof","len",line)
-    #print (line,c)
-    #4 - print
     if(line[0:5]=="print"):
         line_type[c]=4
-    #5 - if
     if(line[0:2]=="if"):
         line_type[c]=5
-    #6 - else if
-    #7 - else
     if(line[0:4]=="else"):
         if(line[0:7]=="else if"):
             line_type[c]=6
         else:
             line_type[c]=7
-    #9 - while
     if(line[0:5]=="while"):
         line_type[c]=9
-    #13 - comment
-    if(line[0:2]=="//"):
-        line_type[c]=13
-    #14 - multi comment
-    if(line[0:2]=="/*"):
-        line_type[c]=14
-#__________________________________________________________
+
+
 for i in range(0,len(code_lines)):
     ff.write('\n')
     if code_lines[i][0]=='{':
@@ -591,24 +482,6 @@ for i in range(0,len(code_lines)):
         Tx_Else(code_lines[i])
     elif line_type[i] == 9:
         Tx_While(code_lines[i])
-    elif line_type[i] == 13:
-        Tx_Single_Comment(code_lines[i])
-    elif line_type[i] == 14:
-        Tx_Multi_Comment(code_lines[i])
-        temp=i+1
-        for k in range(temp,len(code_lines)):
-            if '*/' in code_lines[k]:
-                line= re.sub('\*/', "'''", code_lines[k])
-                line_type[k] = -2
-                for xd in range(0,tab_count):
-                    ff.write('    ')
-                ff.write(line)
-                break
-            for xd in range(0,tab_count):
-                ff.write('    ')
-            ff.write(code_lines[k])
-            line_type[k] = -2
-
 
 f.close()
 ff.close()
@@ -616,7 +489,6 @@ ff.close()
 
 f= open("output.txt")
 ff= open('pythonoutput.txt','w')
-
 for line in f:
     if line.isspace()==False:
         ff.write(line)
