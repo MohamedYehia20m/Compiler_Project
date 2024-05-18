@@ -2,10 +2,10 @@ if __name__ == "__main__":
     while (x > y):
         x=x+1
         y=y-1
-        if (y == -1):
+        if (y == -1  and  x < 10):
             y=0
-        elif (x > 10):
+        elif (x > 10  or  y > 10):
             x=5
         else:
-            print('hello world')
+            print(f'hello, {m}')
     return 0
